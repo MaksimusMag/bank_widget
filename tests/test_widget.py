@@ -5,7 +5,9 @@ from src.widget import get_date, mask_account_card
 
 def test_mask_account_card_card() -> None:
     """Тестирует маскировку номеров карт."""
-    assert mask_account_card("Visa Platinum 7000792289606361") == "Visa Platinum 7000 79** **** 6361"
+    assert (
+        mask_account_card("Visa Platinum 7000792289606361") == "Visa Platinum 7000 79** **** 6361"
+    )
     assert mask_account_card("Maestro 1596837868705199") == "Maestro 1596 83** **** 5199"
     assert mask_account_card("MasterCard 7158300734726758") == "MasterCard 7158 30** **** 6758"
     assert mask_account_card("Visa Classic 6831982476737658") == "Visa Classic 6831 98** **** 7658"
