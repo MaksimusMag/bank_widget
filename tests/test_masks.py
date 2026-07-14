@@ -1,4 +1,5 @@
 """Тесты для модуля masks."""
+"""Этот файл будет добавлен в репозиторий GitHub для проверки №1"""
 
 from src.masks import get_mask_account, get_mask_card_number
 

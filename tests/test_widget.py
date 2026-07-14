@@ -1,4 +1,5 @@
 """Тесты для модуля widget."""
+"""Этот файл будет добавлен в репозиторий GitHub для проверки №1"""
 
 from src.widget import get_date, mask_account_card
 
