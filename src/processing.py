@@ -1,6 +1,6 @@
 """Модуль для обработки данных банковских операций."""
 
-from typing import List, Dict, Optional
+from typing import List, Dict
 
 
 def filter_by_state(transactions: List[Dict[str, str]], state: str = "EXECUTED") -> List[Dict[str, str]]:
