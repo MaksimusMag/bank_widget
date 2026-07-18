@@ -9,27 +9,44 @@
 - Форматирование дат
 - Фильтрация и сортировка транзакций
 
+## Структура проекта
+bank_widget/
+├── .git/
+├── .gitignore
+├── .flake8
+├── pyproject.toml
+├── poetry.lock
+├── README.md
+├── src/
+│ ├── init.py
+│ ├── constants.py # Константы проекта
+│ ├── masks.py # Маскировка номеров
+│ ├── widget.py # Основной виджет
+│ └── processing.py # Обработка данных
+└── tests/
+├── init.py
+├── test_masks.py
+├── test_widget.py
+└── test_processing.py
+
+
 ## Установка
 
 1. Клонируйте репозиторий:
-```bash
-git clone https://github.com/ваш_логин/bank_widget.git
+git clone https://github.com/MaksimusMag/bank_widget.git
 cd bank_widget
 Установите Poetry (если не установлен):
 
-bash
 curl -sSL https://install.python-poetry.org | python3 -
 Установите зависимости:
 
-bash
 poetry install --with lint
 Активируйте виртуальное окружение:
 
-bash
 poetry shell
 Использование
 Маскировка номеров
-python
+
 from src import mask_account_card, get_date
 
 # Маскировка карты
@@ -43,8 +60,8 @@ print(result)  # Счет **4305
 # Форматирование даты
 result = get_date("2024-03-11T02:26:18.671407")
 print(result)  # 11.03.2024
-Фильтрация и сортировка
-python
+Фильтрация и сортировка транзакций
+
 from src import filter_by_state, sort_by_date
 
 transactions = [
@@ -59,17 +76,139 @@ canceled = filter_by_state(transactions, 'CANCELED')  # только CANCELED
 
 # Сортировка по дате
 sorted_desc = sort_by_date(transactions)  # по убыванию (сначала новые)
-sorted_asc = sort_by_date(transactions, ascending=True)  # по возрастанию
+sorted_asc = sort_by_date(transactions, ascending_order=True)  # по возрастанию
+Использование констант
+Проект использует централизованные константы из модуля src.constants.py:
+
+from src import (
+    EXECUTED_STATUS,
+    CANCELED_STATUS,
+    PENDING_STATUS,
+    CARD_NUMBER_LENGTH,
+    ACCOUNT_NUMBER_MIN_LENGTH
+)
+
+print(f"Длина номера карты: {CARD_NUMBER_LENGTH}")  # 16
+print(f"Минимальная длина счета: {ACCOUNT_NUMBER_MIN_LENGTH}")  # 4
+print(f"Статус выполнения: {EXECUTED_STATUS}")  # EXECUTED
+Все магические числа вынесены в константы для улучшения читаемости и поддерживаемости кода.
+
+API Reference
+Модуль masks.py
+get_mask_card_number(card_number: str) -> str
+Маскирует номер банковской карты.
+
+Параметры:
+
+card_number (str): Номер карты (16 цифр)
+
+Возвращает: Замаскированный номер в формате XXXX XX** **** XXXX
+
+Пример:
+
+>>> get_mask_card_number("7000792289606361")
+'7000 79** **** 6361'
+get_mask_account(account_number: str) -> str
+Маскирует номер банковского счета.
+
+Параметры:
+
+account_number (str): Номер счета
+
+Возвращает: Замаскированный номер в формате **XXXX
+
+Пример:
+
+>>> get_mask_account("73654108430135874305")
+'**4305'
+Модуль widget.py
+mask_account_card(account_card_info: str) -> str
+Маскирует номер карты или счета в зависимости от типа.
+
+Параметры:
+
+account_card_info (str): Строка с типом и номером
+
+Возвращает: Строка с замаскированным номером
+
+Примеры:
+
+>>> mask_account_card("Visa Platinum 7000792289606361")
+'Visa Platinum 7000 79** **** 6361'
+
+>>> mask_account_card("Счет 73654108430135874305")
+'Счет **4305'
+get_date(iso_date_string: str) -> str
+Преобразует дату из формата ISO в формат ДД.ММ.ГГГГ.
+
+Параметры:
+
+iso_date_string (str): Дата в формате YYYY-MM-DDTHH:MM:SS.ffffff
+
+Возвращает: Дата в формате ДД.ММ.ГГГГ
+
+Пример:
+
+>>> get_date("2024-03-11T02:26:18.671407")
+'11.03.2024'
+Модуль processing.py
+filter_by_state(transaction_data: TransactionList, target_state: str = EXECUTED_STATUS) -> TransactionList
+Фильтрует список транзакций по значению ключа 'state'.
+
+Параметры:
+
+transaction_data (TransactionList): Список словарей с транзакциями
+
+target_state (str): Значение для фильтрации. По умолчанию 'EXECUTED'
+
+Возвращает: Новый список отфильтрованных транзакций
+
+Пример:
+
+>>> transactions = [
+...     {'id': 41428829, 'state': 'EXECUTED', 'date': '2019-07-03...'},
+...     {'id': 594226727, 'state': 'CANCELED', 'date': '2018-09-12...'}
+... ]
+>>> filter_by_state(transactions)
+[{'id': 41428829, 'state': 'EXECUTED', ...}]
+sort_by_date(transaction_data: TransactionList, ascending_order: bool = False) -> TransactionList
+Сортирует список транзакций по дате.
+
+Параметры:
+
+transaction_data (TransactionList): Список словарей с транзакциями
+
+ascending_order (bool): Порядок сортировки. False - убывание, True - возрастание
+
+Возвращает: Новый отсортированный список транзакций
+
+Пример:
+
+>>> sort_by_date(transactions)  # убывание
+[{'id': 41428829, ...}, {'id': 594226727, ...}]
+>>> sort_by_date(transactions, ascending_order=True)  # возрастание
+[{'id': 594226727, ...}, {'id': 41428829, ...}]
 Запуск тестов
-bash
+# Запустить все тесты
 poetry run pytest tests/ -v
+
+# Запустить тесты конкретного модуля
+poetry run pytest tests/test_processing.py -v
+
+# Запустить с отчетом о покрытии
+poetry run pytest tests/ -v --cov=src/
 Проверка качества кода
-bash
 # Проверка форматирования
 poetry run black --check src/ tests/
 
+# Автоформатирование
+poetry run black src/ tests/
+
 # Проверка сортировки импортов
 poetry run isort --check-only src/ tests/
+
+# Сортировка импортов
+poetry run isort src/ tests/
 
 # Проверка стиля
 poetry run flake8 src/ tests/
@@ -77,13 +216,30 @@ poetry run flake8 src/ tests/
 # Проверка типов
 poetry run mypy src/
 Технологии
-Python 3.10+
+Python 3.10+ - язык программирования
 
 Poetry - управление зависимостями
 
 pytest - тестирование
 
-Black, isort, flake8, mypy - качество кода
+Black - форматирование кода
+
+isort - сортировка импортов
+
+flake8 - проверка стиля
+
+mypy - проверка типов
+
+Требования к коду
+Проект следует стандартам PEP 8:
+
+Использование snake_case для имен переменных и функций
+
+Максимальная длина строки: 100 символов
+
+Использование type hints для всех функций
+
+Документирование всех публичных функций (docstrings)
 
 Автор
 Максим Обросков
