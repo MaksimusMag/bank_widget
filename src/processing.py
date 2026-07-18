@@ -3,18 +3,19 @@
 from typing import Dict, List, Union
 from src.constants import EXECUTED_STATUS
 
+
 Transaction = Dict[str, Union[str, int]]
 TransactionList = List[Transaction]
 
 
 def filter_by_state(
-        transactions: TransactionList, target_state: str = EXECUTED_STATUS
+    transaction_data: TransactionList, target_state: str = EXECUTED_STATUS
 ) -> TransactionList:
     """
     Фильтрует список транзакций по значению ключа 'state'.
 
     Аргументы:
-        transactions (TransactionList): Список словарей с транзакциями.
+        transaction_data (TransactionList): Список словарей с транзакциями.
         target_state (str): Значение для фильтрации по ключу 'state'.
                             По умолчанию 'EXECUTED'.
 
@@ -42,12 +43,12 @@ def filter_by_state(
         [{'id': 594226727, 'state': 'CANCELED',
           'date': '2018-09-12T21:27:25.241689'}]
     """
-    if not transactions:
+    if not transaction_data:
         return []
 
     filtered_transactions = [
         transaction
-        for transaction in transactions
+        for transaction in transaction_data
         if transaction.get("state") == target_state
     ]
 
@@ -55,13 +56,13 @@ def filter_by_state(
 
 
 def sort_by_date(
-        transactions: TransactionList, ascending_order: bool = False
+    transaction_data: TransactionList, ascending_order: bool = False
 ) -> TransactionList:
     """
     Сортирует список транзакций по дате.
 
     Аргументы:
-        transactions (TransactionList): Список словарей с транзакциями.
+        transaction_data (TransactionList): Список словарей с транзакциями.
         ascending_order (bool): Порядок сортировки. False - убывание (сначала новые),
                                 True - возрастание (сначала старые).
                                 По умолчанию False.
@@ -86,11 +87,11 @@ def sort_by_date(
         [{'id': 939719570, ...}, {'id': 594226727, ...},
          {'id': 41428829, ...}]
     """
-    if not transactions:
+    if not transaction_data:
         return []
 
     sorted_transactions = sorted(
-        transactions,
+        transaction_data,
         key=lambda transaction: transaction.get("date", ""),
         reverse=not ascending_order,
     )
