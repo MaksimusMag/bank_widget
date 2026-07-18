@@ -3,7 +3,6 @@
 from typing import Dict, List, Union
 from src.constants import EXECUTED_STATUS
 
-
 Transaction = Dict[str, Union[str, int]]
 TransactionList = List[Transaction]
 
@@ -47,9 +46,7 @@ def filter_by_state(
         return []
 
     filtered_transactions = [
-        transaction
-        for transaction in transaction_data
-        if transaction.get("state") == target_state
+        transaction for transaction in transaction_data if transaction.get("state") == target_state
     ]
 
     return filtered_transactions
