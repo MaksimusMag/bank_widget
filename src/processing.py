@@ -1,6 +1,7 @@
 """Модуль для обработки данных банковских операций."""
 
 from typing import Dict, List, Union
+
 from src.constants import EXECUTED_STATUS
 
 Transaction = Dict[str, Union[str, int]]

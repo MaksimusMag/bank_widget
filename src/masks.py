@@ -1,10 +1,10 @@
 """Модуль для маскировки номеров карт и счетов."""
 
 from src.constants import (
-    CARD_NUMBER_LENGTH,
     ACCOUNT_NUMBER_MIN_LENGTH,
     CARD_DISPLAY_FIRST_FOUR,
     CARD_DISPLAY_NEXT_TWO,
+    CARD_NUMBER_LENGTH,
 )
 
 
@@ -53,6 +53,10 @@ def get_mask_account(account_number: str) -> str:
         '**4305'
     """
     if not account_number:
+        return account_number
+
+    # Проверяем, что строка состоит только из цифр
+    if not account_number.isdigit():
         return account_number
 
     if len(account_number) < ACCOUNT_NUMBER_MIN_LENGTH:

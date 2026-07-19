@@ -1,7 +1,7 @@
 """Модуль для работы с виджетом банковских операций."""
 
-from src.masks import get_mask_account, get_mask_card_number
 from src.constants import ACCOUNT_TYPE_KEYWORDS
+from src.masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(account_card_info: str) -> str:
@@ -26,7 +26,6 @@ def mask_account_card(account_card_info: str) -> str:
     if not account_card_info:
         return account_card_info
 
-    # Разделяем строку на тип и номер
     info_parts = account_card_info.rsplit(' ', 1)
 
     if len(info_parts) != 2:
@@ -34,11 +33,9 @@ def mask_account_card(account_card_info: str) -> str:
 
     card_type, card_number = info_parts[0], info_parts[1]
 
-    # Проверяем, является ли это счетом
     if card_type.lower() in ACCOUNT_TYPE_KEYWORDS:
         return f"{card_type} {get_mask_account(card_number)}"
     else:
-        # Для всех карт используем маскировку карт
         return f"{card_type} {get_mask_card_number(card_number)}"
 
 
@@ -59,11 +56,19 @@ def get_date(iso_date_string: str) -> str:
     if not iso_date_string:
         return iso_date_string
 
-    # Извлекаем часть с датой (до буквы T)
-    date_part = iso_date_string.split('T')[0]
+    try:
+        # Извлекаем часть с датой (до буквы T)
+        date_part = iso_date_string.split('T')[0]
 
-    # Разделяем на год, месяц, день
-    year, month, day = date_part.split('-')
+        # Разделяем на год, месяц, день
+        year, month, day = date_part.split('-')
 
-    # Возвращаем в формате ДД.ММ.ГГГГ
-    return f"{day}.{month}.{year}"
+        # Проверяем, что все части состоят из цифр
+        if not (year.isdigit() and month.isdigit() and day.isdigit()):
+            return iso_date_string
+
+        # Возвращаем в формате ДД.ММ.ГГГГ
+        return f"{day}.{month}.{year}"
+    except (ValueError, AttributeError, IndexError):
+        # Если произошла ошибка при разборе, возвращаем исходную строку
+        return iso_date_string

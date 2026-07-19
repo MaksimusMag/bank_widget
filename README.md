@@ -15,7 +15,7 @@ bank_widget/
 ├── .gitignore
 ├── .flake8
 ├── pyproject.toml
-├── poetry.lock
+├── poetry.lock (игнорируется)
 ├── README.md
 ├── src/
 │ ├── init.py
@@ -25,6 +25,7 @@ bank_widget/
 │ └── processing.py # Обработка данных
 └── tests/
 ├── init.py
+├── conftest.py # Фикстуры для тестов
 ├── test_masks.py
 ├── test_widget.py
 └── test_processing.py
@@ -79,6 +80,7 @@ sorted_desc = sort_by_date(transactions)  # по убыванию (сначал�
 sorted_asc = sort_by_date(transactions, ascending_order=True)  # по возрастанию
 Использование констант
 Проект использует централизованные константы из модуля src.constants.py:
+
 
 from src import (
     EXECUTED_STATUS,
@@ -188,6 +190,36 @@ ascending_order (bool): Порядок сортировки. False - убыва�
 [{'id': 41428829, ...}, {'id': 594226727, ...}]
 >>> sort_by_date(transactions, ascending_order=True)  # возрастание
 [{'id': 594226727, ...}, {'id': 41428829, ...}]
+Тестирование
+Структура тестов
+Тесты организованы с использованием передовых практик pytest:
+
+Фикстуры (conftest.py) - централизованное управление тестовыми данными:
+
+sample_transactions - стандартный набор транзакций
+
+transactions_with_same_dates - транзакции с одинаковыми датами
+
+transactions_with_missing_dates - транзакции без дат
+
+invalid_date_transactions - транзакции с нестандартными форматами дат
+
+card_numbers - тестовые номера карт
+
+account_numbers - тестовые номера счетов
+
+date_strings - тестовые даты
+
+Параметризация - тестирование различных сценариев без дублирования кода:
+
+Различные форматы номеров карт и счетов
+
+Различные статусы транзакций (EXECUTED, CANCELED, PENDING)
+
+Различные форматы дат
+
+Граничные случаи и некорректные входные данные
+
 Запуск тестов
 # Запустить все тесты
 poetry run pytest tests/ -v
@@ -196,7 +228,30 @@ poetry run pytest tests/ -v
 poetry run pytest tests/test_processing.py -v
 
 # Запустить с отчетом о покрытии
-poetry run pytest tests/ -v --cov=src/
+poetry run pytest tests/ -v --cov=src/ --cov-report=term
+
+# Запустить с HTML отчетом о покрытии
+poetry run pytest tests/ -v --cov=src/ --cov-report=html
+Покрытие кода
+На данный момент покрытие кода составляет 100%:
+
+Модуль	Покрытие
+src/__init__.py	100%
+src/constants.py	100%
+src/masks.py	100%
+src/widget.py	100%
+src/processing.py	100%
+ИТОГО	100%
+Все функции и ветви кода покрыты тестами, включая:
+
+Валидные и невалидные входные данные
+
+Граничные случаи
+
+Обработку исключений
+
+Различные статусы и форматы данных
+
 Проверка качества кода
 # Проверка форматирования
 poetry run black --check src/ tests/
@@ -220,7 +275,9 @@ Python 3.10+ - язык программирования
 
 Poetry - управление зависимостями
 
-pytest - тестирование
+pytest - фреймворк для тестирования
+
+pytest-cov - измерение покрытия кода
 
 Black - форматирование кода
 
@@ -240,6 +297,8 @@ mypy - проверка типов
 Использование type hints для всех функций
 
 Документирование всех публичных функций (docstrings)
+
+Покрытие тестами не менее 80%
 
 Автор
 Максим Обросков
