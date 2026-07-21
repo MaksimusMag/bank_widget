@@ -1,29 +1,107 @@
-"""Тесты для модуля masks."""
-"""Этот файл будет добавлен в репозиторий GitHub для проверки №1"""
+""""Тесты для модуля masks."""
+
+import pytest
 
 from src.masks import get_mask_account, get_mask_card_number
 
 
-def test_get_mask_card_number() -> None:
-    """Тестирует маскировку номера карты."""
-    assert get_mask_card_number("7000792289606361") == "7000 79** **** 6361"
-    assert get_mask_card_number("1234567890123456") == "1234 56** **** 3456"
+class TestGetMaskCardNumber:
+    """Тесты для функции get_mask_card_number."""
+
+    @pytest.mark.parametrize(
+        "card_number, expected",
+        [
+            ("7000792289606361", "7000 79** **** 6361"),
+            ("1234567890123456", "1234 56** **** 3456"),
+            ("0000000000000000", "0000 00** **** 0000"),
+            ("1111222233334444", "1111 22** **** 4444"),
+            ("9999888877776666", "9999 88** **** 6666"),
+        ]
+    )
+    def test_valid_card_numbers(self, card_number: str, expected: str) -> None:
+        """Тестирует маскировку валидных номеров карт."""
+        assert get_mask_card_number(card_number) == expected
+
+    @pytest.mark.parametrize(
+        "card_number",
+        [
+            "",  # пустая строка
+            "12345",  # слишком короткий
+            "12345678901234567",  # слишком длинный
+            "123456789012345",  # 15 цифр
+            "1234567890123456a",  # содержит букву
+            "abcdefghijklmnop",  # только буквы
+            "1234 5678 9012 3456",  # с пробелами
+            "1234-5678-9012-3456",  # с дефисами
+        ]
+    )
+    def test_invalid_card_numbers(self, card_number: str) -> None:
+        """Тестирует обработку некорректных номеров карт."""
+        assert get_mask_card_number(card_number) == card_number
+
+#    def test_none_input(self) -> None:
+#        """Тестирует обработку None."""
+#        # Функция должна обрабатывать None без исключения
+#        with pytest.raises(AttributeError):
+#            get_mask_card_number(None)  # type: ignore
 
 
-def test_get_mask_card_number_invalid() -> None:
-    """Тестирует обработку некорректных номеров карт."""
-    assert get_mask_card_number("") == ""
-    assert get_mask_card_number("12345") == "12345"
-    assert get_mask_card_number("123456789012345a") == "123456789012345a"
+class TestGetMaskAccount:
+    """Тесты для функции get_mask_account."""
 
+    @pytest.mark.parametrize(
+        "account_number, expected",
+        [
+            ("73654108430135874305", "**4305"),
+            ("1234567890", "**7890"),
+            ("11111111111111111111", "**1111"),
+            ("000000000000", "**0000"),
+            ("9876543210", "**3210"),
+            ("12345678901234567890", "**7890"),
+        ]
+    )
+    def test_valid_account_numbers(self, account_number: str, expected: str) -> None:
+        """Тестирует маскировку валидных номеров счетов."""
+        assert get_mask_account(account_number) == expected
 
-def test_get_mask_account() -> None:
-    """Тестирует маскировку номера счета."""
-    assert get_mask_account("73654108430135874305") == "**4305"
-    assert get_mask_account("1234567890") == "**7890"
+    @pytest.mark.parametrize(
+        "account_number",
+        [
+            "",  # пустая строка
+            "123",  # меньше 4 символов
+            "12",  # 2 символа
+            "1",  # 1 символ
+            "abc",  # буквы
+        ]
+    )
+    def test_invalid_account_numbers(self, account_number: str) -> None:
+        """Тестирует обработку некорректных номеров счетов."""
+        assert get_mask_account(account_number) == account_number
 
+    @pytest.mark.parametrize(
+        "account_number",
+        [
+            "123a",  # содержит букву
+            "12 34",  # с пробелом
+        ]
+    )
+    def test_invalid_account_numbers_with_digits(self, account_number: str) -> None:
+        """Тестирует обработку номеров счетов с нецифровыми символами."""
+        assert get_mask_account(account_number) == account_number
 
-def test_get_mask_account_invalid() -> None:
-    """Тестирует обработку некорректных номеров счетов."""
-    assert get_mask_account("") == ""
-    assert get_mask_account("123") == "123"
+#    def test_none_input(self) -> None:
+#        """Тестирует обработку None."""
+#        with pytest.raises(AttributeError):
+#            get_mask_account(None)  # type: ignore
+
+    @pytest.mark.parametrize(
+        "account_number, expected",
+        [
+            ("1234", "**1234"),
+            ("12345", "**2345"),
+            ("123456", "**3456"),
+        ]
+    )
+    def test_edge_cases(self, account_number: str, expected: str) -> None:
+        """Тестирует граничные случаи (минимальная длина)."""
+        assert get_mask_account(account_number) == expected
