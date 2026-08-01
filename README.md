@@ -37,29 +37,24 @@ bank_widget/
 ├── test_processing.py
 └── test_widget.py
 
-text
 
 ## Установка
 
 1. Клонируйте репозиторий:
-```bash
 git clone https://github.com/MaksimusMag/bank_widget.git
 cd bank_widget
 Установите Poetry (если не установлен):
 
-bash
 curl -sSL https://install.python-poetry.org | python3 -
 Установите зависимости:
 
-bash
 poetry install --with lint
 Активируйте виртуальное окружение:
 
-bash
 poetry shell
 Использование
 Маскировка номеров
-python
+
 from src import mask_account_card, get_date
 
 # Маскировка карты
@@ -74,7 +69,7 @@ print(result)  # Счет **4305
 result = get_date("2024-03-11T02:26:18.671407")
 print(result)  # 11.03.2024
 Фильтрация и сортировка транзакций
-python
+
 from src import filter_by_state, sort_by_date
 
 transactions = [
@@ -93,7 +88,6 @@ sorted_asc = sort_by_date(transactions, ascending_order=True)  # по возра
 Использование констант
 Проект использует централизованные константы из модуля src.constants.py:
 
-python
 from src import (
     EXECUTED_STATUS,
     CANCELED_STATUS,
@@ -123,7 +117,6 @@ currency_code (str): Код валюты (например, "USD", "RUB")
 
 Пример:
 
-python
 from src import filter_by_currency
 
 usd_transactions = filter_by_currency(transactions, "USD")
@@ -143,7 +136,6 @@ transactions (List[Dict]): Список транзакций
 
 Пример:
 
-python
 from src import transaction_descriptions
 
 descriptions = transaction_descriptions(transactions)
@@ -165,7 +157,6 @@ stop (int): Конечное значение (включительно)
 
 Пример:
 
-python
 from src import card_number_generator
 
 for card in card_number_generator(1, 5):
@@ -189,7 +180,6 @@ filename (Optional[str]): Имя файла для записи логов. Ес
 
 Пример использования:
 
-python
 from src import log
 
 # Логирование в файл
@@ -209,11 +199,9 @@ my_function(1, 2)  # Выведет "my_function ok" в консоль
 
 При успешном выполнении:
 
-text
 <имя_функции> ok
 При ошибке:
 
-text
 <имя_функции> error: <тип_ошибки>. Inputs: (<аргументы>), {<именованные_аргументы>}
 API Reference
 Модуль masks.py
@@ -228,7 +216,6 @@ card_number (str): Номер карты (16 цифр)
 
 Пример:
 
-python
 >>> get_mask_card_number("7000792289606361")
 '7000 79** **** 6361'
 get_mask_account(account_number: str) -> str
@@ -242,7 +229,6 @@ account_number (str): Номер счета
 
 Пример:
 
-python
 >>> get_mask_account("73654108430135874305")
 '**4305'
 Модуль widget.py
@@ -257,7 +243,6 @@ account_card_info (str): Строка с типом и номером
 
 Примеры:
 
-python
 >>> mask_account_card("Visa Platinum 7000792289606361")
 'Visa Platinum 7000 79** **** 6361'
 
@@ -274,7 +259,6 @@ iso_date_string (str): Дата в формате YYYY-MM-DDTHH:MM:SS.ffffff
 
 Пример:
 
-python
 >>> get_date("2024-03-11T02:26:18.671407")
 '11.03.2024'
 Модуль processing.py
@@ -339,19 +323,19 @@ poetry run pytest tests/ -v --cov=src/ --cov-report=term
 # Запустить с HTML отчетом о покрытии
 poetry run pytest tests/ -v --cov=src/ --cov-report=html
 Покрытие кода
-На данный момент покрытие кода составляет 95%:
+На данный момент покрытие кода составляет 90%:
 
 Модуль	Покрытие
 src/__init__.py	100%
 src/constants.py	100%
-src/decorators.py	100%
-src/generators.py	93%
+src/decorators.py	82%
+src/generators.py	86%
 src/masks.py	100%
 src/widget.py	89%
 src/processing.py	100%
-ИТОГО	95%
+ИТОГО	90%
 Проверка качества кода
-bash
+
 # Проверка форматирования
 poetry run black --check src/ tests/
 
