@@ -1,0 +1,2 @@
+2026-08-02 01:56:01,583 - multiply - INFO - multiply ok
+2026-08-02 01:56:01,592 - failing_function - ERROR - failing_function error: ValueError. Inputs: (10,), {}
