@@ -1,5 +1,4 @@
 """Тесты для модуля masks."""
-"""Этот файл будет добавлен в репозиторий GitHub для проверки №1"""
 
 from src.masks import get_mask_account, get_mask_card_number
 
@@ -27,3 +26,5 @@ def test_get_mask_account_invalid() -> None:
     """Тестирует обработку некорректных номеров счетов."""
     assert get_mask_account("") == ""
     assert get_mask_account("123") == "123"
+    assert get_mask_account("abc") == "abc"
+    assert get_mask_account("123a") == "123a"
