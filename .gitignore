@@ -142,3 +142,7 @@ cython_debug/
 *.swo
 *~
 .DS_Store
+
+# Логи
+logs/*.log
+!logs/.gitkeep

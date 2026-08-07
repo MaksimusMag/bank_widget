@@ -1,33 +1,35 @@
 """Модуль для работы с виджетом банковских операций."""
 
+from src.constants import ACCOUNT_TYPE_KEYWORDS
 from src.masks import get_mask_account, get_mask_card_number
 
 
-def mask_account_card(info: str) -> str:
+def mask_account_card(account_card_info: str) -> str:
     """
     Маскирует номер карты или счета в зависимости от типа.
 
     Аргументы:
-        info (str): Строка с типом и номером карты или счета.
+        account_card_info (str): Строка с типом и номером карты или счета.
+                                 Примеры: "Visa Platinum 7000792289606361",
+                                         "Счет 73654108430135874305"
 
     Возвращает:
         str: Строка с замаскированным номером.
-
     """
-    # Разделяем строку на тип и номер
-    parts = info.rsplit(" ", 1)
+    if not account_card_info:
+        return account_card_info
 
-    if len(parts) != 2:
-        return info
+    info_parts = account_card_info.rsplit(" ", 1)
 
-    card_type, number = parts[0], parts[1]
+    if len(info_parts) != 2:
+        return account_card_info
 
-    # Проверяем, является ли это счетом
-    if card_type.lower() == "счет":
-        return f"{card_type} {get_mask_account(number)}"
+    card_type, card_number = info_parts[0], info_parts[1]
+
+    if card_type.lower() in ACCOUNT_TYPE_KEYWORDS:
+        return f"{card_type} {get_mask_account(card_number)}"
     else:
-        # Для всех карт используем маскировку карт
-        return f"{card_type} {get_mask_card_number(number)}"
+        return f"{card_type} {get_mask_card_number(card_number)}"
 
 
 def get_date(date_string: str) -> str:
@@ -40,11 +42,24 @@ def get_date(date_string: str) -> str:
     Возвращает:
         str: Дата в формате "ДД.ММ.ГГГГ"
     """
-    # Извлекаем часть с датой (до буквы T)
-    date_part = date_string.split("T")[0]
+    if not date_string or not date_string.strip():
+        return date_string
 
-    # Разделяем на год, месяц, день
-    year, month, day = date_part.split("-")
+    try:
+        date_part = date_string.split("T")[0]
 
-    # Возвращаем в формате ДД.ММ.ГГГГ
-    return f"{day}.{month}.{year}"
+        if "-" not in date_part:
+            return date_string
+
+        parts = date_part.split("-")
+        if len(parts) != 3:
+            return date_string
+
+        year, month, day = parts
+
+        if not (year.isdigit() and month.isdigit() and day.isdigit()):
+            return date_string
+
+        return f"{day}.{month}.{year}"
+    except (ValueError, AttributeError, IndexError):
+        return date_string
