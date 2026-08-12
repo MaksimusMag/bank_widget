@@ -1,0 +1,30 @@
+[
+  {
+    "day":"Понедельник",
+    "average_spent":100.0
+  },
+  {
+    "day":"Вторник",
+    "average_spent":200.0
+  },
+  {
+    "day":"Среда",
+    "average_spent":50.0
+  },
+  {
+    "day":"Четверг",
+    "average_spent":0.0
+  },
+  {
+    "day":"Пятница",
+    "average_spent":0.0
+  },
+  {
+    "day":"Суббота",
+    "average_spent":0.0
+  },
+  {
+    "day":"Воскресенье",
+    "average_spent":0.0
+  }
+]
