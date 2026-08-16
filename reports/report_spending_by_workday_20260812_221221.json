@@ -1,0 +1,10 @@
+[
+  {
+    "day_type":"Рабочий день",
+    "average_spent":100.0
+  },
+  {
+    "day_type":"Выходной день",
+    "average_spent":125.0
+  }
+]
